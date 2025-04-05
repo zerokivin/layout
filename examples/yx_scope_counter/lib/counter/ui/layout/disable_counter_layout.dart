@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 
-import '../counter_layout_controller.dart';
-import '../counter_layout_controller_factory.dart';
+import '../layout_controller/counter_layout_controller.dart';
 
 class DisableCounterLayout extends Layout {
-  const DisableCounterLayout({
+  const DisableCounterLayout(
+    CounterLayoutControllerFactory super.layoutControllerFactory, {
     super.key,
-  }) : super(const CounterLayoutControllerFactory());
+  });
 
   @override
   Widget build(CounterLayoutController layoutController) {

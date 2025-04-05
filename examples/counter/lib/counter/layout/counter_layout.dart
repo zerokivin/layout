@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 
-import '../counter_layout_controller.dart';
-import '../counter_layout_controller_factory.dart';
+import '../layout_controller/counter_layout_controller.dart';
 
-class DisableCounterLayout extends Layout {
-  const DisableCounterLayout(
-    CounterLayoutControllerFactory super.layoutControllerFactory, {
+class CounterLayout extends Layout {
+  const CounterLayout({
     super.key,
-  });
+  }) : super(const CounterLayoutControllerFactory());
 
   @override
   Widget build(CounterLayoutController layoutController) {
@@ -27,19 +25,9 @@ class DisableCounterLayout extends Layout {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ValueListenableBuilder(
-              valueListenable: layoutController.notifier,
-              builder: (_, value, __) {
-                VoidCallback? onPressed;
-                if (value > 0) {
-                  onPressed = () => layoutController.subtract();
-                }
-
-                return FilledButton(
-                  onPressed: onPressed,
-                  child: Icon(Icons.remove),
-                );
-              },
+            FilledButton(
+              onPressed: () => layoutController.subtract(),
+              child: Icon(Icons.remove),
             ),
             SizedBox(
               width: 16,

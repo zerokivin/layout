@@ -1,8 +1,4 @@
-import 'package:layout/layout.dart';
-
-import '../../util/snack_bar_wrapper.dart';
-import '../manager/counter_state_manager.dart';
-import 'counter_layout_controller.dart';
+part of 'counter_layout_controller.dart';
 
 final class CounterLayoutControllerFactory implements LayoutControllerFactory {
   final CounterStateManager _counterStateManager;

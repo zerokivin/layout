@@ -6,7 +6,9 @@ import 'package:layout/layout.dart';
 import 'package:yx_scope_counter/counter/exception/subtract_exception.dart';
 import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
 
-import '../../util/snack_bar_wrapper.dart';
+import '../../../util/snack_bar_wrapper.dart';
+
+part 'counter_layout_controller.factory.dart';
 
 abstract interface class CounterLayoutController implements LayoutController {
   ValueListenable<int> get notifier;

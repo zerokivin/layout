@@ -1,7 +1,8 @@
 import 'package:yx_scope/yx_scope.dart';
 import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
-import 'package:yx_scope_counter/counter/ui/counter_layout_controller_factory.dart';
 import 'package:yx_scope_counter/util/snack_bar_wrapper.dart';
+
+import '../counter/ui/layout_controller/counter_layout_controller.dart';
 
 abstract interface class AppScope {
   CounterLayoutControllerFactory get counterLayoutControllerFactory;

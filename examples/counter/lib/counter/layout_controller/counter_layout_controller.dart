@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 
-import '../util/snack_bar_wrapper.dart';
+import '../../util/snack_bar_wrapper.dart';
+
+part 'counter_layout_controller.factory.dart';
 
 abstract interface class CounterLayoutController implements LayoutController {
   ValueListenable<int> get notifier;

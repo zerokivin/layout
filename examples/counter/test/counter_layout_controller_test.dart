@@ -1,4 +1,4 @@
-import 'package:counter/counter/counter_layout_controller.dart';
+import 'package:counter/counter/layout_controller/counter_layout_controller.dart';
 import 'package:counter/util/snack_bar_wrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

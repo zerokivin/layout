@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:yx_scope_flutter/yx_scope_flutter.dart';
 
-import 'counter/ui/component/counter_layout.dart';
-import 'counter/ui/component/disable_counter_layout.dart';
+import 'counter/ui/layout/counter_layout.dart';
+import 'counter/ui/layout/disable_counter_layout.dart';
 import 'scope/app_scope.dart';
 import 'scope/app_scope_holder.dart';
 

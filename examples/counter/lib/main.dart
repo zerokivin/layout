@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'counter/component/counter_layout.dart';
-import 'counter/component/disable_counter_layout.dart';
+import 'counter/layout/counter_layout.dart';
+import 'counter/layout/disable_counter_layout.dart';
 
 void main() {
   runApp(const MyApp());

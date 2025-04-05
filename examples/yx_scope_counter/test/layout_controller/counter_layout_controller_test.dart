@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:yx_scope_counter/counter/exception/subtract_exception.dart';
 import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
-import 'package:yx_scope_counter/counter/ui/counter_layout_controller.dart';
+import 'package:yx_scope_counter/counter/ui/layout_controller/counter_layout_controller.dart';
 import 'package:yx_scope_counter/util/snack_bar_wrapper.dart';
 
 void main() {
