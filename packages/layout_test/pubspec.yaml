@@ -1,0 +1,23 @@
+name: layout_test
+description: "A new Flutter project."
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_test:
+    sdk: flutter
+
+  mocktail: ^1.0.4
+  meta: ^1.15.0
+  layout:
+    path: ../layout
+
+dev_dependencies:
+  flutter_lints: ^5.0.0

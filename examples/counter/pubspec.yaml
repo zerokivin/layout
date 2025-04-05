@@ -1,0 +1,27 @@
+name: counter
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  layout:
+    path: ../../packages/layout
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+  mocktail: ^1.0.4
+  layout_test:
+    path: ../../packages/layout_test
+
+flutter:
+  uses-material-design: true
