@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:yx_scope_counter/counter/exception/subtract_exception.dart';
 import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
-import 'package:yx_scope_counter/counter/ui/layout_controller/counter_layout_controller.dart';
+import 'package:yx_scope_counter/counter/ui/layout_model/counter_layout_model.dart';
 import 'package:yx_scope_counter/util/snack_bar_wrapper.dart';
 
 void main() {
@@ -22,52 +22,52 @@ void main() {
     counterStateManagerMock = CounterStateManagerMock();
   });
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter initial state',
-    () => CounterUILayoutController(
+    () => CounterLayoutModel(
       counterStateManager: counterStateManagerMock,
       snackBarWrapper: snackBarWrapperMock,
     ),
-    (layoutController, tester, context) {
+    (layoutModel, tester, context) {
       when(() => counterStateManagerMock.valueStream).thenAnswer(
         (_) => BehaviorSubject.seeded(0),
       );
 
-      expect(layoutController.notifier.value, 0);
+      expect(layoutModel.listenable.value, 0);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter add',
-    () => CounterUILayoutController(
+    () => CounterLayoutModel(
       counterStateManager: counterStateManagerMock,
       snackBarWrapper: snackBarWrapperMock,
     ),
-    (layoutController, tester, context) async {
-      layoutController.add();
+    (layoutModel, tester, context) async {
+      layoutModel.add();
       verify(() => counterStateManagerMock.add()).called(1);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter subtract',
-    () => CounterUILayoutController(
+    () => CounterLayoutModel(
       counterStateManager: counterStateManagerMock,
       snackBarWrapper: snackBarWrapperMock,
     ),
-    (layoutController, tester, context) async {
-      layoutController.subtract();
+    (layoutModel, tester, context) async {
+      layoutModel.subtract();
       verify(() => counterStateManagerMock.subtract()).called(1);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter subtract less then 0',
-    () => CounterUILayoutController(
+    () => CounterLayoutModel(
       counterStateManager: counterStateManagerMock,
       snackBarWrapper: snackBarWrapperMock,
     ),
-    (layoutController, tester, context) async {
+    (layoutModel, tester, context) async {
       when(() => counterStateManagerMock.valueStream).thenAnswer(
         (_) => BehaviorSubject.seeded(0),
       );
@@ -76,7 +76,7 @@ void main() {
       );
 
       tester.init();
-      layoutController.subtract();
+      layoutModel.subtract();
 
       verify(
         () => snackBarWrapperMock.show(

@@ -3,23 +3,14 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
-import 'package:yx_scope_counter/counter/exception/subtract_exception.dart';
-import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
 
 import '../../../util/snack_bar_wrapper.dart';
+import '../../exception/subtract_exception.dart';
+import '../../manager/counter_state_manager.dart';
 
-part 'counter_layout_controller.factory.dart';
+part 'counter_layout_model.factory.dart';
 
-abstract interface class CounterLayoutController implements LayoutController {
-  ValueListenable<int> get notifier;
-
-  void add();
-
-  void subtract();
-}
-
-final class CounterUILayoutController extends UILayoutController
-    implements CounterLayoutController {
+class CounterLayoutModel extends LayoutModel {
   final CounterStateManager _counterStateManager;
   final SnackBarWrapper _snackBarWrapper;
 
@@ -28,14 +19,13 @@ final class CounterUILayoutController extends UILayoutController
   );
   late StreamSubscription<int> _subscription;
 
-  CounterUILayoutController({
+  CounterLayoutModel({
     required CounterStateManager counterStateManager,
     required SnackBarWrapper snackBarWrapper,
   })  : _counterStateManager = counterStateManager,
         _snackBarWrapper = snackBarWrapper;
 
-  @override
-  ValueListenable<int> get notifier => _notifier;
+  ValueListenable<int> get listenable => _notifier;
 
   @override
   void init() {
@@ -48,10 +38,8 @@ final class CounterUILayoutController extends UILayoutController
     );
   }
 
-  @override
   void add() => _counterStateManager.add();
 
-  @override
   void subtract() {
     try {
       _counterStateManager.subtract();

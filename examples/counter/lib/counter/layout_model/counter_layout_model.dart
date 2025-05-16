@@ -4,35 +4,23 @@ import 'package:layout/layout.dart';
 
 import '../../util/snack_bar_wrapper.dart';
 
-part 'counter_layout_controller.factory.dart';
+part 'counter_layout_model.factory.dart';
 
-abstract interface class CounterLayoutController implements LayoutController {
-  ValueListenable<int> get notifier;
-
-  void add();
-
-  void subtract();
-}
-
-final class CounterUILayoutController extends UILayoutController
-    implements CounterLayoutController {
+class CounterLayoutModel extends LayoutModel {
   final SnackBarWrapper _snackBarWrapper;
 
   final ValueNotifier<int> _notifier = ValueNotifier(0);
 
-  CounterUILayoutController({
+  CounterLayoutModel({
     SnackBarWrapper snackBarWrapper = const SnackBarWrapper(),
   }) : _snackBarWrapper = snackBarWrapper;
 
-  @override
-  ValueListenable<int> get notifier => _notifier;
+  ValueListenable<int> get listenable => _notifier;
 
-  @override
   void add() {
     _notifier.value += 1;
   }
 
-  @override
   void subtract() {
     if (_notifier.value == 0) {
       _snackBarWrapper.show(

@@ -1,7 +1,7 @@
-part of 'base_layout_controller.dart';
+part of 'layout_model.dart';
 
 base class LayoutElement extends ComponentElement {
-  late BaseLayoutController _layoutController;
+  late LayoutModel _layoutModel;
 
   // private _firstBuild hack
   bool _isInitialized = false;
@@ -14,14 +14,14 @@ base class LayoutElement extends ComponentElement {
   Layout get widget => super.widget as Layout;
 
   @override
-  Widget build() => widget.build(_layoutController);
+  Widget build() => widget.build(_layoutModel);
 
   @override
   void update(Layout newWidget) {
     super.update(newWidget);
 
-    final oldLayout = _layoutController.layout;
-    _layoutController
+    final oldLayout = _layoutModel.layout;
+    _layoutModel
       .._layout = newWidget
       ..didUpdateLayout(oldLayout);
   }
@@ -30,20 +30,20 @@ base class LayoutElement extends ComponentElement {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    _layoutController.didChangeDependencies();
+    _layoutModel.didChangeDependencies();
   }
 
   @override
   void activate() {
     super.activate();
 
-    _layoutController.activate();
+    _layoutModel.activate();
     markNeedsBuild();
   }
 
   @override
   void deactivate() {
-    _layoutController.deactivate();
+    _layoutModel.deactivate();
 
     super.deactivate();
   }
@@ -52,7 +52,7 @@ base class LayoutElement extends ComponentElement {
   void unmount() {
     super.unmount();
 
-    _layoutController
+    _layoutModel
       ..dispose()
       .._element = null
       .._layout = null;
@@ -62,8 +62,8 @@ base class LayoutElement extends ComponentElement {
   void performRebuild() {
     // private _firstBuild hack
     if (!_isInitialized) {
-      _layoutController = widget.layoutControllerFactory();
-      _layoutController
+      _layoutModel = widget.layoutModelFactory();
+      _layoutModel
         .._element = this
         .._layout = widget
         ..init()
@@ -77,7 +77,7 @@ base class LayoutElement extends ComponentElement {
 
   @override
   void reassemble() {
-    _layoutController.reassemble();
+    _layoutModel.reassemble();
 
     super.reassemble();
   }
@@ -87,9 +87,9 @@ base class LayoutElement extends ComponentElement {
     super.debugFillProperties(properties);
 
     properties.add(
-      DiagnosticsProperty<BaseLayoutController>(
-        'layout_controller',
-        _layoutController,
+      DiagnosticsProperty<LayoutModel>(
+        'layout_model',
+        _layoutModel,
         defaultValue: null,
       ),
     );

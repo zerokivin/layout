@@ -2,10 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../base_layout_controller.dart';
+import '../layout_model.dart';
 
-base mixin SingleTickerProviderLayoutMixin on BaseLayoutController
-    implements TickerProvider {
+mixin SingleTickerProviderLayout on LayoutModel implements TickerProvider {
   Ticker? _ticker;
   ValueListenable<bool>? _tickerModeNotifier;
 
@@ -17,15 +16,15 @@ base mixin SingleTickerProviderLayoutMixin on BaseLayoutController
       }
       throw FlutterError.fromParts(<DiagnosticsNode>[
         ErrorSummary(
-          '$runtimeType is a SingleTickerProviderLayoutMixin but multiple tickers were created.',
+          '$runtimeType is a SingleTickerProviderLayout but multiple tickers were created.',
         ),
         ErrorDescription(
-          'A SingleTickerProviderLayoutMixin can only be used as a TickerProvider once.',
+          'A SingleTickerProviderLayout can only be used as a TickerProvider once.',
         ),
         ErrorHint(
-          'If a LayoutController is used for multiple AnimationController objects, or if it is passed to other '
+          'If a LayoutModel is used for multiple AnimationController objects, or if it is passed to other '
           'objects and those objects might use it more than one time in total, then instead of '
-          'mixing in a SingleTickerProviderLayoutMixin, use a regular TickerProviderLayoutMixin.',
+          'mixing in a SingleTickerProviderLayout, use a regular TickerProviderLayout.',
         ),
       ]);
     }());
@@ -58,7 +57,7 @@ base mixin SingleTickerProviderLayoutMixin on BaseLayoutController
       throw FlutterError.fromParts(<DiagnosticsNode>[
         ErrorSummary('$this was disposed with an active Ticker.'),
         ErrorDescription(
-          '$runtimeType created a Ticker via its SingleTickerProviderLayoutMixin, but at the time '
+          '$runtimeType created a Ticker via its SingleTickerProviderLayout, but at the time '
           'dispose() was called on the mixin, that Ticker was still active. The Ticker must '
           'be disposed before calling super.dispose().',
         ),

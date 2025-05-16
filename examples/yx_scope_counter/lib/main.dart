@@ -53,7 +53,7 @@ class _HomeState extends State<_Home> {
   Widget build(BuildContext context) {
     return ScopeBuilder<AppScope>.withPlaceholder(
       builder: (_, scope) {
-        final factory = scope.counterLayoutControllerFactory;
+        final factory = scope.counterLayoutModelFactory;
 
         return Scaffold(
           body: IndexedStack(

@@ -2,22 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'layout.dart';
-import 'layout_controller.dart';
 
 part 'layout_element.dart';
 
-abstract base class BaseLayoutController
-    with Diagnosticable
-    implements LayoutController {
+abstract class LayoutModel<T extends Layout> with Diagnosticable {
   BuildContext? _element;
-  Layout? _layout;
+  T? _layout;
 
   @protected
   @visibleForTesting
-  Layout get layout {
+  T get layout {
     assert(() {
       if (_layout == null) {
-        throw FlutterError('This LayoutController has been unmounted');
+        throw FlutterError('This layoutModel has been unmounted');
       }
 
       return true;
@@ -31,7 +28,7 @@ abstract base class BaseLayoutController
   BuildContext get context {
     assert(() {
       if (_element == null) {
-        throw FlutterError('This LayoutController has been unmounted');
+        throw FlutterError('This layoutModel has been unmounted');
       }
 
       return true;
@@ -58,7 +55,7 @@ abstract base class BaseLayoutController
 
   @protected
   @visibleForTesting
-  void didUpdateLayout(covariant Layout oldLayout) {}
+  void didUpdateLayout(covariant T oldLayout) {}
 
   @protected
   @visibleForTesting
@@ -73,7 +70,7 @@ abstract base class BaseLayoutController
   void dispose() {}
 
   @visibleForTesting
-  void setupTestLayout(Layout? layout) {
+  void setupTestLayout(T? layout) {
     _layout = layout;
   }
 
@@ -84,9 +81,9 @@ abstract base class BaseLayoutController
 }
 
 /// Mixin that helps to prevent [NoSuchMethodError] exception when the
-/// [BaseLayoutController] is mocked.
+/// [LayoutModel] is mocked.
 @visibleForTesting
-base mixin MockLayoutControllerMixin implements BaseLayoutController {
+mixin MockLayoutModelMixin implements LayoutModel {
   @override
   set _element(BuildContext? _) {}
 

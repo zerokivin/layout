@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import '../base_layout_controller.dart';
+import '../layout_model.dart';
 
-base mixin AutomaticKeepAliveLayoutMixin on BaseLayoutController {
+mixin AutomaticKeepAliveLayout on LayoutModel {
   KeepAliveHandle? _keepAliveHandle;
 
   /// Whether the current instance should be kept alive.

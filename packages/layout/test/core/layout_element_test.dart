@@ -8,22 +8,22 @@ import 'package:mocktail/mocktail.dart';
 void main() {
   late int factoryCalledCount;
   late Object? buildCallbackObject;
-  late LayoutControllerMock? layoutController;
+  late LayoutModelMock? layoutModel;
   late TestLayout layout;
 
   setUp(() {
     factoryCalledCount = 0;
     buildCallbackObject = null;
-    layoutController = null;
+    layoutModel = null;
 
     void buildCallback(Object object) {
       buildCallbackObject = object;
     }
 
-    layoutController = LayoutControllerMock();
+    layoutModel = LayoutModelMock();
     layout = TestLayout(
-      TestLayoutControllerFactory(
-        layoutController!,
+      TestLayoutModelFactory(
+        layoutModel!,
         () {
           factoryCalledCount++;
         },
@@ -33,7 +33,7 @@ void main() {
   });
 
   testWidgets(
-    'First build should create LayoutController',
+    'First build should create LayoutModel',
     (tester) async {
       await tester.pumpWidget(layout);
 
@@ -42,7 +42,7 @@ void main() {
   );
 
   testWidgets(
-    'Next builds should not create LayoutController',
+    'Next builds should not create LayoutModel',
     (tester) async {
       await tester.pumpWidget(layout);
 
@@ -58,23 +58,23 @@ void main() {
   );
 
   testWidgets(
-    'First build should call correct LayoutController methods',
+    'First build should call correct LayoutModel methods',
     (tester) async {
       await tester.pumpWidget(layout);
 
       verifyInOrder([
-        () => layoutController!.init(),
-        () => layoutController!.didChangeDependencies(),
+        () => layoutModel!.init(),
+        () => layoutModel!.didChangeDependencies(),
       ]);
     },
   );
 
   testWidgets(
-    'Element should use correct LayoutController for building',
+    'Element should use correct LayoutModel for building',
     (tester) async {
       await tester.pumpWidget(layout);
 
-      expect(buildCallbackObject, same(layoutController));
+      expect(buildCallbackObject, same(layoutModel));
     },
   );
 
@@ -92,36 +92,36 @@ void main() {
   );
 
   testWidgets(
-    'Unmount should call deactivate from LayoutController',
+    'Unmount should call deactivate from LayoutModel',
     (tester) async {
       await tester.pumpWidget(layout);
       await tester.pumpWidget(Placeholder());
 
-      verify(() => layoutController!.deactivate()).called(1);
+      verify(() => layoutModel!.deactivate()).called(1);
     },
   );
 
   testWidgets(
-    'Unmount should call dispose from LayoutController',
+    'Unmount should call dispose from LayoutModel',
     (tester) async {
       await tester.pumpWidget(layout);
       await tester.pumpWidget(Placeholder());
 
-      verify(() => layoutController!.dispose()).called(1);
+      verify(() => layoutModel!.dispose()).called(1);
     },
   );
 
   testWidgets(
-    'Moving to another part of tree should call activate from LayoutController',
+    'Moving to another part of tree should call activate from LayoutModel',
     (tester) async {
       void buildCallback(Object object) {
         buildCallbackObject = object;
       }
 
-      layoutController = LayoutControllerMock();
+      layoutModel = LayoutModelMock();
       layout = TestLayout(
-        TestLayoutControllerFactory(
-          layoutController!,
+        TestLayoutModelFactory(
+          layoutModel!,
           () {
             factoryCalledCount++;
           },
@@ -165,18 +165,16 @@ void main() {
         ),
       );
 
-      verify(() => layoutController!.activate()).called(1);
+      verify(() => layoutModel!.activate()).called(1);
     },
   );
 
   testWidgets(
-    'Change dependencies should call didChangeDependencies LayoutController',
+    'Change dependencies should call didChangeDependencies LayoutModel',
     (tester) async {
-      final notifier = TestNotifier();
-
       await tester.pumpWidget(
-        TestNotifierWidget(
-          test: notifier,
+        TestNotifierScope(
+          test: TestNotifier(),
           child: layout,
         ),
       );
@@ -185,27 +183,25 @@ void main() {
         find.byElementType(LayoutElement),
       );
 
-      verify(() => layoutController!.didChangeDependencies()).called(1);
+      verify(() => layoutModel!.didChangeDependencies()).called(1);
 
-      TestNotifierWidget.of(element);
-
-      notifier.up();
+      TestNotifierScope.of(element).value++;
 
       await tester.pump();
 
-      verify(() => layoutController!.didChangeDependencies()).called(1);
+      verify(() => layoutModel!.didChangeDependencies()).called(1);
     },
   );
 
   testWidgets(
-    'Element should invoke LayoutController didUpdateLayout after update',
+    'Element should invoke LayoutModel didUpdateLayout after update',
     (tester) async {
       await tester.pumpWidget(layout);
-      when(() => layoutController!.layout).thenReturn(layout);
+      when(() => layoutModel!.layout).thenReturn(layout);
 
       final newLayout = TestLayout(
-        TestLayoutControllerFactory(
-          LayoutControllerMock(),
+        TestLayoutModelFactory(
+          LayoutModelMock(),
           () {},
         ),
         buildCallback: (_) {},
@@ -213,7 +209,7 @@ void main() {
 
       await tester.pumpWidget(newLayout);
 
-      verify(() => layoutController!.didUpdateLayout(layout)).called(1);
+      verify(() => layoutModel!.didUpdateLayout(layout)).called(1);
     },
   );
 
@@ -221,15 +217,15 @@ void main() {
     'Element should have correct link with layout after update',
     (tester) async {
       await tester.pumpWidget(layout);
-      when(() => layoutController!.layout).thenReturn(layout);
+      when(() => layoutModel!.layout).thenReturn(layout);
 
       final element = tester.element<LayoutElement>(
         find.byElementType(LayoutElement),
       );
 
       final newLayout = TestLayout(
-        TestLayoutControllerFactory(
-          LayoutControllerMock(),
+        TestLayoutModelFactory(
+          LayoutModelMock(),
           () {},
         ),
         buildCallback: (_) {},
@@ -242,7 +238,7 @@ void main() {
   );
 
   testWidgets(
-    'Element reassemble should invoke LayoutController reassemble',
+    'Element reassemble should invoke LayoutModel reassemble',
     (tester) async {
       await tester.pumpWidget(layout);
 
@@ -252,12 +248,12 @@ void main() {
 
       element.reassemble();
 
-      verify(() => layoutController!.reassemble()).called(1);
+      verify(() => layoutModel!.reassemble()).called(1);
     },
   );
 
   testWidgets(
-    'Debug fill properties should add LayoutController',
+    'Debug fill properties should add LayoutModel',
     (tester) async {
       await tester.pumpWidget(layout);
 
@@ -269,11 +265,11 @@ void main() {
       element.debugFillProperties(builder);
 
       final props = builder.properties;
-      final layoutControllerProperty = props.firstWhereOrNull(
-        (p) => p.name == 'layout_controller',
+      final layoutModelProperty = props.firstWhereOrNull(
+        (p) => p.name == 'layout_model',
       );
 
-      expect(layoutControllerProperty, isNotNull);
+      expect(layoutModelProperty, isNotNull);
     },
   );
 }
@@ -282,66 +278,57 @@ class TestLayout extends Layout {
   final void Function(Object) buildCallback;
 
   const TestLayout(
-    super.layoutControllerFactory, {
+    super.layoutModelFactory, {
     required this.buildCallback,
     super.key,
   });
 
   @override
-  Widget build(LayoutControllerMock layoutController) {
-    buildCallback.call(layoutController);
+  Widget build(LayoutModelMock layoutModel) {
+    buildCallback.call(layoutModel);
 
     return Placeholder();
   }
 }
 
-final class TestLayoutControllerFactory implements LayoutControllerFactory {
-  final LayoutControllerMock layoutController;
+final class TestLayoutModelFactory implements LayoutModelFactory {
+  final LayoutModelMock layoutModel;
   final VoidCallback factoryCalledCallback;
 
-  TestLayoutControllerFactory(
-    this.layoutController,
+  TestLayoutModelFactory(
+    this.layoutModel,
     this.factoryCalledCallback,
   );
 
   @override
-  BaseLayoutController call() {
+  LayoutModelMock call() {
     factoryCalledCallback();
 
-    return layoutController;
+    return layoutModel;
   }
 }
 
-final class LayoutControllerMock extends DiagnosticableMock
-    with MockLayoutControllerMixin {}
+class LayoutModelMock extends DiagnosticableMock with MockLayoutModelMixin {}
 
 abstract class DiagnosticableMock extends Mock with Diagnosticable {}
 
-class TestNotifierWidget extends InheritedNotifier {
+class TestNotifierScope extends InheritedNotifier<TestNotifier> {
   final TestNotifier test;
 
-  const TestNotifierWidget({
+  const TestNotifierScope({
     required this.test,
     required super.child,
     super.key,
   }) : super(notifier: test);
 
   static TestNotifier of(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<TestNotifierWidget>();
+    final scope =
+        context.dependOnInheritedWidgetOfExactType<TestNotifierScope>();
 
-    if (widget == null) {
-      throw Exception('Not found');
-    }
-
-    return widget.test;
+    return scope!.notifier!;
   }
 }
 
 class TestNotifier extends ValueNotifier<int> {
   TestNotifier() : super(0);
-
-  void up() {
-    value++;
-  }
 }

@@ -2,16 +2,15 @@ import 'package:yx_scope/yx_scope.dart';
 import 'package:yx_scope_counter/counter/manager/counter_state_manager.dart';
 import 'package:yx_scope_counter/util/snack_bar_wrapper.dart';
 
-import '../counter/ui/layout_controller/counter_layout_controller.dart';
+import '../counter/ui/layout_model/counter_layout_model.dart';
 
 abstract interface class AppScope {
-  CounterLayoutControllerFactory get counterLayoutControllerFactory;
+  CounterLayoutModelFactory get counterLayoutModelFactory;
 }
 
 final class AppScopeContainer extends ScopeContainer implements AppScope {
   @override
-  late final counterLayoutControllerFactory =
-      _counterLayoutControllerFactoryDep.get;
+  late final counterLayoutModelFactory = _counterLayoutModelFactoryDep.get;
 
   @override
   List<Set<AsyncDep>> get initializeQueue => [
@@ -28,8 +27,8 @@ final class AppScopeContainer extends ScopeContainer implements AppScope {
     () => CounterStateManager.create(),
   );
 
-  late final _counterLayoutControllerFactoryDep = dep(
-    () => CounterLayoutControllerFactory(
+  late final _counterLayoutModelFactoryDep = dep(
+    () => CounterLayoutModelFactory(
       counterStateManager: _counterStateManagerDep.get,
       snackBarWrapper: _snackBarWrapperDep.get,
     ),

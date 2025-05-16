@@ -10,7 +10,7 @@ const firstTabKey = Key('First tab key');
 const secondTabKey = Key('Second tab key');
 
 void main() {
-  late TestUILayoutController layoutController;
+  late TestLayoutModel layoutModel;
   late TestLayout layout;
   late ScrollController scrollController;
   late TabController tabController;
@@ -49,8 +49,8 @@ void main() {
     () {
       scrollController = ScrollController();
       layout = TestLayout(
-        TestLayoutControllerFactory(
-          () => layoutController,
+        TestLayoutModelFactory(
+          () => layoutModel,
         ),
         controller: scrollController,
         listViewContent: listViewContent,
@@ -66,7 +66,7 @@ void main() {
   testWidgets(
     'When switching between tabs, the state of the tabs should be preserved',
     (tester) async {
-      layoutController = TestUILayoutController();
+      layoutModel = TestLayoutModel();
       widget = TestTabScreen(
         layout,
         tabController,
@@ -113,10 +113,10 @@ void main() {
   );
 
   testWidgets(
-    'If disable saving state of the layoutController, then when switching '
+    'If disable saving state of the layoutModel, then when switching '
     'between tabs, their state should not be saved',
     (tester) async {
-      layoutController = TestUILayoutController();
+      layoutModel = TestLayoutModel();
       widget = TestTabScreen(
         layout,
         tabController,
@@ -124,7 +124,7 @@ void main() {
       );
       await tester.pumpWidget(widget);
 
-      layoutController.setupWantKeepAlive(false);
+      layoutModel.setupWantKeepAlive(false);
 
       // During initialization, the first tab with the
       // beginning of the listViewContent should be displayed.
@@ -168,7 +168,7 @@ void main() {
     'Switching wantKeepAlive from true(default) to false should change '
     'the behavior of the widget',
     (tester) async {
-      layoutController = TestUILayoutController(
+      layoutModel = TestLayoutModel(
         wantKeepAlive: false,
       );
       widget = TestTabScreen(
@@ -214,7 +214,7 @@ void main() {
       expect(find.byKey(firstWidgetKey), findsOneWidget);
       expect(find.byKey(lastWidgetKey), findsNothing);
 
-      layoutController.setupWantKeepAlive(true);
+      layoutModel.setupWantKeepAlive(true);
 
       // Scroll to the end of the listViewContent.
       await tester.drag(find.byKey(listViewKey), const Offset(0, -500));
@@ -248,20 +248,21 @@ void main() {
   );
 }
 
-final class TestLayoutControllerFactory implements LayoutControllerFactory {
-  final ValueGetter<TestUILayoutController> layoutController;
+final class TestLayoutModelFactory implements LayoutModelFactory {
+  final ValueGetter<TestLayoutModel> layoutModel;
 
-  TestLayoutControllerFactory(this.layoutController);
+  TestLayoutModelFactory(
+    this.layoutModel,
+  );
 
   @override
-  BaseLayoutController call() => layoutController();
+  TestLayoutModel call() => layoutModel();
 }
 
-final class TestUILayoutController extends UILayoutController
-    with AutomaticKeepAliveLayoutMixin {
+class TestLayoutModel extends LayoutModel with AutomaticKeepAliveLayout {
   bool _wantKeepAlive;
 
-  TestUILayoutController({
+  TestLayoutModel({
     bool wantKeepAlive = true,
   }) : _wantKeepAlive = wantKeepAlive;
 
@@ -279,14 +280,14 @@ class TestLayout extends Layout {
   final List<Widget> listViewContent;
 
   const TestLayout(
-    super.layoutControllerFactory, {
+    super.layoutModelFactory, {
     required this.controller,
     required this.listViewContent,
     super.key,
   });
 
   @override
-  Widget build(TestUILayoutController layoutController) {
+  Widget build(TestLayoutModel layoutModel) {
     return Scaffold(
       body: ListView(
         key: listViewKey,

@@ -2,10 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
-import '../base_layout_controller.dart';
+import '../layout_model.dart';
 
-base mixin TickerProviderLayoutMixin on BaseLayoutController
-    implements TickerProvider {
+mixin TickerProviderLayout on LayoutModel implements TickerProvider {
   Set<Ticker>? _tickers;
   ValueListenable<bool>? _tickerModeNotifier;
 
@@ -46,7 +45,7 @@ base mixin TickerProviderLayoutMixin on BaseLayoutController
             throw FlutterError.fromParts(<DiagnosticsNode>[
               ErrorSummary('$this was disposed with an active Ticker.'),
               ErrorDescription(
-                '$runtimeType created a Ticker via its TickerProviderLayoutMixin, but at the time '
+                '$runtimeType created a Ticker via its TickerProviderLayout, but at the time '
                 'dispose() was called on the mixin, that Ticker was still active. All Tickers must '
                 'be disposed before calling super.dispose().',
               ),
@@ -118,7 +117,7 @@ base mixin TickerProviderLayoutMixin on BaseLayoutController
 // confusing. Instead we use the less precise but more anodyne "_WidgetTicker",
 // which attracts less attention.
 class _WidgetTicker extends Ticker {
-  final TickerProviderLayoutMixin _creator;
+  final TickerProviderLayout _creator;
 
   _WidgetTicker(
     super.onTick,

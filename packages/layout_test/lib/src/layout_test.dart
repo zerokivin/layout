@@ -2,17 +2,16 @@
 
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:layout/layout.dart';
 import 'package:meta/meta.dart';
 import 'package:mocktail/mocktail.dart';
 
-/// Testing function for test LayoutController.
+/// Testing function for test LayoutModel.
 /// [description] - description of test.
-/// [setupLayoutController] - function should return LayoutController that will be test.
-/// [testFunction] - function that test LayoutController.
+/// [setupLayoutModel] - function should return LayoutModel that will be test.
+/// [testFunction] - function that test LayoutModel.
 /// [skip] - should skip the test. If passed a String or `true`, the test is
 /// skipped. If it's a String, it should explain why the test is skipped;
 /// this reason will be printed instead of running the test.
@@ -39,12 +38,12 @@ import 'package:mocktail/mocktail.dart';
 /// If [retry] is passed, the test will be retried the provided number of times
 /// before being marked as a failure.
 @isTest
-void testLayoutController<T extends BaseLayoutController>(
+void testLayoutModel<T extends LayoutModel>(
   String description,
-  T Function() setupLayoutController,
+  T Function() setupLayoutModel,
   FutureOr<void> Function(
-    T layoutController,
-    LayoutControllerTester<T> tester,
+    T layoutModel,
+    LayoutModelTester<T> tester,
     MockedContext context,
   ) testFunction, {
   String? testOn,
@@ -61,12 +60,12 @@ void testLayoutController<T extends BaseLayoutController>(
   test(
     description,
     () async {
-      final layoutController = setupLayoutController();
-      final element = _LayoutTestableElement<T>(layoutController);
+      final layoutModel = setupLayoutModel();
+      final element = LayoutModelTester<T>(layoutModel);
 
       when(() => element.mounted).thenReturn(true);
 
-      await testFunction(layoutController, element, element);
+      await testFunction(layoutModel, element, element);
     },
     testOn: testOn,
     timeout: timeout,
@@ -80,94 +79,71 @@ void testLayoutController<T extends BaseLayoutController>(
 /// Interface for emulating BuildContext behaviour.
 class MockedContext extends Mock implements BuildContext {}
 
-/// Interface for controlling LayoutController's stage during tests.
+/// Interface for controlling LayoutModel's stage during tests.
 /// Every method in this interface represents possible changes
-/// with LayoutController and allows to emulate this happened.
+/// with LayoutModel and allows to emulate this happened.
 ///
-/// For additional information check the lifecycle of the [BaseLayoutController].
-abstract class LayoutControllerTester<T extends BaseLayoutController> {
-  /// Emulates initializing LayoutController to work.
-  ///
-  /// Represents processes happen with LayoutController when it is inseted
-  /// into the tree, before the first build of the subtree.
-  void init({covariant Layout? initLayout});
+/// For additional information check the lifecycle of the [LayoutModel].
+class LayoutModelTester<T extends LayoutModel> extends MockedContext {
+  final T _layoutModel;
 
-  /// Emulates changing a layout instance associated
-  /// with the according LayoutElement.
-  void update(covariant Layout newLayout);
-
-  /// Emulates changing of dependencies LayoutController has subscribed
-  /// by BuildContext.
-  void didChangeDependencies();
-
-  /// Emulates the transition from the "inactive"
-  /// to the "active" lifecycle state.
-  ///
-  /// In real work happens when the LayoutController is reinserted into
-  /// the tree after having been removed via [deactivate].
-  void activate();
-
-  /// Emulates the transition from the "active"
-  /// to the "inactive" lifecycle state.
-  ///
-  /// In real work happens when the LayoutController is removed from the tree.
-  void deactivate();
-
-  /// Emulates the transition from the "inactive"
-  /// to the "defunct" lifecycle state.
-  ///
-  /// In real work happens when the LayoutController is removed from the
-  /// tree permanently.
-  /// See also:
-  /// [BaseLayoutController.dispose];
-  void unmount();
-}
-
-class _LayoutTestableElement<T extends BaseLayoutController>
-    extends MockedContext
-    with Diagnosticable
-    implements LayoutControllerTester<T> {
-  final T _layoutController;
-
-  _LayoutTestableElement(
-    this._layoutController,
+  LayoutModelTester(
+    this._layoutModel,
   );
 
-  @override
+  /// Emulates initializing LayoutModel to work.
+  ///
+  /// Represents processes happen with LayoutModel when it is inseted
+  /// into the tree, before the first build of the subtree.
   void init({Layout? initLayout}) {
-    _layoutController
+    _layoutModel
       ..setupTestElement(this)
       ..setupTestLayout(initLayout)
       ..init()
       ..didChangeDependencies();
   }
 
-  @override
+  /// Emulates changing a layout instance associated
+  /// with the according LayoutElement.
   void update(Layout newLayout) {
-    final oldLayout = _layoutController.layout;
-    _layoutController
+    final oldLayout = _layoutModel.layout;
+    _layoutModel
       ..setupTestLayout(newLayout)
       ..didUpdateLayout(oldLayout);
   }
 
-  @override
+  /// Emulates changing of dependencies LayoutModel has subscribed
+  /// by BuildContext.
   void didChangeDependencies() {
-    _layoutController.didChangeDependencies();
+    _layoutModel.didChangeDependencies();
   }
 
-  @override
+  /// Emulates the transition from the "inactive"
+  /// to the "active" lifecycle state.
+  ///
+  /// In real work happens when the LayoutModel is reinserted into
+  /// the tree after having been removed via [deactivate].
   void activate() {
-    _layoutController.activate();
+    _layoutModel.activate();
   }
 
-  @override
+  /// Emulates the transition from the "active"
+  /// to the "inactive" lifecycle state.
+  ///
+  /// In real work happens when the LayoutModel is removed from the tree.
   void deactivate() {
-    _layoutController.deactivate();
+    _layoutModel.deactivate();
   }
 
-  @override
+  /// Emulates the transition from the "inactive"
+  /// to the "defunct" lifecycle state.
+  ///
+  /// In real work happens when the LayoutModel is removed from the
+  /// tree permanently.
+  /// See also:
+  /// [LayoutModel.dispose];
   void unmount() {
-    _layoutController
+    _layoutModel
       ..dispose()
       ..setupTestElement(null)
       ..setupTestLayout(null);

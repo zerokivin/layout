@@ -4,15 +4,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:layout/layout.dart';
 
 void main() {
-  late TestLayoutController layoutController;
+  late TestLayoutModel layoutModel;
 
   group('In tree interaction.', () {
     late TestLayout layout;
 
     setUp(() {
-      layoutController = TestLayoutController();
+      layoutModel = TestLayoutModel();
       layout = TestLayout(
-        TestLayoutControllerFactory(layoutController),
+        TestLayoutModelFactory(layoutModel),
       );
     });
 
@@ -25,7 +25,7 @@ void main() {
           find.byElementType(LayoutElement),
         );
 
-        expect(layoutController.context, same(element));
+        expect(layoutModel.context, same(element));
       },
     );
 
@@ -38,13 +38,13 @@ void main() {
         FlutterError? error;
 
         try {
-          layoutController.context;
+          layoutModel.context;
         } on FlutterError catch (e) {
           error = e;
         }
 
         expect(error, isNotNull);
-        expect(error!.message, 'This LayoutController has been unmounted');
+        expect(error!.message, 'This layoutModel has been unmounted');
       },
     );
 
@@ -54,13 +54,13 @@ void main() {
         FlutterError? error;
 
         try {
-          layoutController.context;
+          layoutModel.context;
         } on FlutterError catch (e) {
           error = e;
         }
 
         expect(error, isNotNull);
-        expect(error!.message, 'This LayoutController has been unmounted');
+        expect(error!.message, 'This layoutModel has been unmounted');
       },
     );
 
@@ -69,7 +69,7 @@ void main() {
       (tester) async {
         await tester.pumpWidget(layout);
 
-        expect(layoutController.isMounted, isTrue);
+        expect(layoutModel.isMounted, isTrue);
       },
     );
 
@@ -79,7 +79,7 @@ void main() {
         await tester.pumpWidget(layout);
         await tester.pumpWidget(Placeholder());
 
-        expect(layoutController.isMounted, isFalse);
+        expect(layoutModel.isMounted, isFalse);
       },
     );
 
@@ -88,7 +88,7 @@ void main() {
       (tester) async {
         await tester.pumpWidget(layout);
 
-        expect(layoutController.layout, same(layout));
+        expect(layoutModel.layout, same(layout));
       },
     );
 
@@ -101,32 +101,32 @@ void main() {
         FlutterError? error;
 
         try {
-          layoutController.layout;
+          layoutModel.layout;
         } on FlutterError catch (e) {
           error = e;
         }
 
         expect(error, isNotNull);
-        expect(error!.message, 'This LayoutController has been unmounted');
+        expect(error!.message, 'This layoutModel has been unmounted');
       },
     );
   });
 
   group('Testing methods', () {
     setUp(() {
-      layoutController = TestLayoutController();
+      layoutModel = TestLayoutModel();
     });
 
     test(
       'setupTestLayout should set layout',
       () {
         final layout = TestLayout(
-          TestLayoutControllerFactory(layoutController),
+          TestLayoutModelFactory(layoutModel),
         );
 
-        layoutController.setupTestLayout(layout);
+        layoutModel.setupTestLayout(layout);
 
-        expect(layoutController.layout, same(layout));
+        expect(layoutModel.layout, same(layout));
       },
     );
 
@@ -134,13 +134,13 @@ void main() {
       'setupTestElement should set element',
       () {
         final layout = TestLayout(
-          TestLayoutControllerFactory(layoutController),
+          TestLayoutModelFactory(layoutModel),
         );
         final element = LayoutElement(layout);
 
-        layoutController.setupTestElement(element);
+        layoutModel.setupTestElement(element);
 
-        expect(layoutController.context, same(element));
+        expect(layoutModel.context, same(element));
       },
     );
   });
@@ -148,41 +148,25 @@ void main() {
 
 class TestLayout extends Layout {
   const TestLayout(
-    super.layoutControllerFactory, {
+    super.layoutModelFactory, {
     super.key,
   });
 
   @override
-  Widget build(TestLayoutController layoutController) {
+  Widget build(TestLayoutModel layoutModel) {
     return Placeholder();
   }
 }
 
-final class TestLayoutControllerFactory implements LayoutControllerFactory {
-  final TestLayoutController layoutController;
+final class TestLayoutModelFactory implements LayoutModelFactory {
+  final TestLayoutModel layoutModel;
 
-  TestLayoutControllerFactory(this.layoutController);
+  TestLayoutModelFactory(
+    this.layoutModel,
+  );
 
   @override
-  BaseLayoutController call() => layoutController;
+  TestLayoutModel call() => layoutModel;
 }
 
-final class TestLayoutController extends BaseLayoutController {
-  @override
-  CupertinoThemeData get cupertinoTheme => throw UnimplementedError();
-
-  @override
-  AssetBundle get defaultAssetBundle => throw UnimplementedError();
-
-  @override
-  DefaultTextStyle get defaultTextStyle => throw UnimplementedError();
-
-  @override
-  MediaQueryData get mediaQuery => throw UnimplementedError();
-
-  @override
-  TextDirection get directionality => throw UnimplementedError();
-
-  @override
-  ThemeData get theme => throw UnimplementedError();
-}
+class TestLayoutModel extends LayoutModel {}

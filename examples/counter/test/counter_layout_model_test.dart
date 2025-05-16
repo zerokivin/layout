@@ -1,4 +1,4 @@
-import 'package:counter/counter/layout_controller/counter_layout_controller.dart';
+import 'package:counter/counter/layout_model/counter_layout_model.dart';
 import 'package:counter/util/snack_bar_wrapper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,42 +17,42 @@ void main() {
     snackBarWrapperMock = SnackBarWrapperMock();
   });
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter initial state',
-    () => CounterUILayoutController(),
-    (layoutController, tester, context) {
-      expect(layoutController.notifier.value, 0);
+    () => CounterLayoutModel(),
+    (layoutModel, tester, context) {
+      expect(layoutModel.listenable.value, 0);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter add',
-    () => CounterUILayoutController(),
-    (layoutController, tester, context) async {
-      layoutController.add();
-      expect(layoutController.notifier.value, 1);
+    () => CounterLayoutModel(),
+    (layoutModel, tester, context) async {
+      layoutModel.add();
+      expect(layoutModel.listenable.value, 1);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter subtract',
-    () => CounterUILayoutController(),
-    (layoutController, tester, context) async {
-      layoutController.add();
-      layoutController.subtract();
-      expect(layoutController.notifier.value, 0);
+    () => CounterLayoutModel(),
+    (layoutModel, tester, context) async {
+      layoutModel.add();
+      layoutModel.subtract();
+      expect(layoutModel.listenable.value, 0);
     },
   );
 
-  testLayoutController<CounterUILayoutController>(
+  testLayoutModel<CounterLayoutModel>(
     'counter subtract less then 0',
-    () => CounterUILayoutController(
+    () => CounterLayoutModel(
       snackBarWrapper: snackBarWrapperMock,
     ),
-    (layoutController, tester, context) async {
+    (layoutModel, tester, context) async {
       tester.init();
-      layoutController.subtract();
-      expect(layoutController.notifier.value, 0);
+      layoutModel.subtract();
+      expect(layoutModel.listenable.value, 0);
       verify(
         () => snackBarWrapperMock.show(
           context,

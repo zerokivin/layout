@@ -7,15 +7,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:layout/layout.dart';
 
 void main() {
-  late TestUILayoutController layoutController;
+  late TestLayoutModel layoutModel;
   late TestLayout layout;
 
   setUp(
     () {
-      layoutController = TestUILayoutController();
+      layoutModel = TestLayoutModel();
       layout = TestLayout(
-        TestLayoutControllerFactory(
-          layoutController,
+        TestLayoutModelFactory(
+          layoutModel,
         ),
       );
     },
@@ -37,11 +37,11 @@ void main() {
     'throw a specific error',
     (tester) async {
       await tester.pumpWidget(layout);
-      unawaited(layoutController.controller.repeat());
+      unawaited(layoutModel.controller.repeat());
       Object? expectError;
 
       try {
-        layoutController.dispose();
+        layoutModel.dispose();
       } catch (e) {
         expectError = e;
       }
@@ -64,48 +64,49 @@ void main() {
         error.toStringDeep().split('\n').take(13).join('\n'),
         equalsIgnoringHashCodes(
           'FlutterError\n'
-          '   TestUILayoutController#00000(tickers: tracking 1 ticker) was\n'
-          '   disposed with an active Ticker.\n'
-          '   TestUILayoutController created a Ticker via its\n'
-          '   TickerProviderLayoutMixin, but at the time dispose() was called\n'
-          '   on the mixin, that Ticker was still active. All Tickers must be\n'
-          '   disposed before calling super.dispose().\n'
+          '   TestLayoutModel#00000(tickers: tracking 1 ticker) was disposed\n'
+          '   with an active Ticker.\n'
+          '   TestLayoutModel created a Ticker via its TickerProviderLayout,\n'
+          '   but at the time dispose() was called on the mixin, that Ticker\n'
+          '   was still active. All Tickers must be disposed before calling\n'
+          '   super.dispose().\n'
           '   Tickers used by AnimationControllers should be disposed by\n'
           '   calling dispose() on the AnimationController itself. Otherwise,\n'
           '   the ticker will leak.\n'
           '   The offending ticker was:\n'
-          '     _WidgetTicker(created by TestUILayoutController#00000)\n'
+          '     _WidgetTicker(created by TestLayoutModel#00000)\n'
           '     The stack trace when the _WidgetTicker was actually created\n',
         ),
       );
 
-      layoutController.controller.stop();
+      layoutModel.controller.stop();
       expectError = null;
 
       try {
-        layoutController.dispose();
+        layoutModel.dispose();
       } catch (e) {
         expectError = e;
       }
 
       expect(expectError, isNull);
 
-      layoutController.controller.dispose();
+      layoutModel.controller.dispose();
     },
   );
 }
 
-final class TestLayoutControllerFactory implements LayoutControllerFactory {
-  final TestUILayoutController layoutController;
+final class TestLayoutModelFactory implements LayoutModelFactory {
+  final TestLayoutModel layoutModel;
 
-  TestLayoutControllerFactory(this.layoutController);
+  TestLayoutModelFactory(
+    this.layoutModel,
+  );
 
   @override
-  BaseLayoutController call() => layoutController;
+  TestLayoutModel call() => layoutModel;
 }
 
-final class TestUILayoutController extends UILayoutController
-    with TickerProviderLayoutMixin {
+class TestLayoutModel extends LayoutModel with TickerProviderLayout {
   late AnimationController controller = AnimationController(
     duration: const Duration(seconds: 6),
     vsync: this,
@@ -119,12 +120,12 @@ final class TestUILayoutController extends UILayoutController
 
 class TestLayout extends Layout {
   const TestLayout(
-    super.layoutControllerFactory, {
+    super.layoutModelFactory, {
     super.key,
   });
 
   @override
-  Widget build(TestUILayoutController layoutController) {
+  Widget build(TestLayoutModel layoutModel) {
     return MaterialApp(
       home: Scaffold(
         body: Placeholder(),

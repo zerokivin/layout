@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 
-import '../layout_controller/counter_layout_controller.dart';
+import '../layout_model/counter_layout_model.dart';
 
 class CounterLayout extends Layout {
   const CounterLayout({
     super.key,
-  }) : super(const CounterLayoutControllerFactory());
+  }) : super(const CounterLayoutModelFactory());
 
   @override
-  Widget build(CounterLayoutController layoutController) {
+  Widget build(CounterLayoutModel layoutModel) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ValueListenableBuilder(
-          valueListenable: layoutController.notifier,
+          valueListenable: layoutModel.listenable,
           builder: (_, value, __) {
             return Text('$value');
           },
@@ -26,14 +26,14 @@ class CounterLayout extends Layout {
           mainAxisSize: MainAxisSize.min,
           children: [
             FilledButton(
-              onPressed: () => layoutController.subtract(),
+              onPressed: () => layoutModel.subtract(),
               child: Icon(Icons.remove),
             ),
             SizedBox(
               width: 16,
             ),
             FilledButton(
-              onPressed: () => layoutController.add(),
+              onPressed: () => layoutModel.add(),
               child: Icon(Icons.add),
             ),
           ],

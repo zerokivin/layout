@@ -9,7 +9,7 @@ void main() {
     layout = const TestLayout();
   });
 
-  test('UILayout should create correct type element', () {
+  test('Layout should create correct type element', () {
     final result = layout.createElement();
 
     expect(result, const TypeMatcher<LayoutElement>());
@@ -19,19 +19,23 @@ void main() {
 class TestLayout extends Layout {
   const TestLayout({
     super.key,
-  }) : super(const TestLayoutControllerFactory());
+  }) : super(const TestLayoutModelFactory());
 
   @override
-  Widget build(TestUILayoutController layoutController) {
-    return Placeholder();
+  Widget build(TestLayoutModel layoutModel) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Placeholder(),
+      ),
+    );
   }
 }
 
-final class TestLayoutControllerFactory implements LayoutControllerFactory {
-  const TestLayoutControllerFactory();
+final class TestLayoutModelFactory implements LayoutModelFactory {
+  const TestLayoutModelFactory();
 
   @override
-  BaseLayoutController call() => TestUILayoutController();
+  TestLayoutModel call() => TestLayoutModel();
 }
 
-final class TestUILayoutController extends UILayoutController {}
+class TestLayoutModel extends LayoutModel {}

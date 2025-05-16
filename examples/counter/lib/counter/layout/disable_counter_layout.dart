@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:layout/layout.dart';
 
-import '../layout_controller/counter_layout_controller.dart';
+import '../layout_model/counter_layout_model.dart';
 
 class DisableCounterLayout extends Layout {
   const DisableCounterLayout({
     super.key,
-  }) : super(const CounterLayoutControllerFactory());
+  }) : super(const CounterLayoutModelFactory());
 
   @override
-  Widget build(CounterLayoutController layoutController) {
+  Widget build(CounterLayoutModel layoutModel) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ValueListenableBuilder(
-          valueListenable: layoutController.notifier,
+          valueListenable: layoutModel.listenable,
           builder: (_, value, __) {
             return Text('$value');
           },
@@ -26,11 +26,11 @@ class DisableCounterLayout extends Layout {
           mainAxisSize: MainAxisSize.min,
           children: [
             ValueListenableBuilder(
-              valueListenable: layoutController.notifier,
+              valueListenable: layoutModel.listenable,
               builder: (_, value, __) {
                 VoidCallback? onPressed;
                 if (value > 0) {
-                  onPressed = () => layoutController.subtract();
+                  onPressed = () => layoutModel.subtract();
                 }
 
                 return FilledButton(
@@ -43,7 +43,7 @@ class DisableCounterLayout extends Layout {
               width: 16,
             ),
             FilledButton(
-              onPressed: () => layoutController.add(),
+              onPressed: () => layoutModel.add(),
               child: Icon(Icons.add),
             ),
           ],

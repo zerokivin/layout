@@ -1,17 +1,17 @@
-part of 'counter_layout_controller.dart';
+part of 'counter_layout_model.dart';
 
-final class CounterLayoutControllerFactory implements LayoutControllerFactory {
+final class CounterLayoutModelFactory implements LayoutModelFactory {
   final CounterStateManager _counterStateManager;
   final SnackBarWrapper _snackBarWrapper;
 
-  CounterLayoutControllerFactory({
+  CounterLayoutModelFactory({
     required CounterStateManager counterStateManager,
     required SnackBarWrapper snackBarWrapper,
   })  : _counterStateManager = counterStateManager,
         _snackBarWrapper = snackBarWrapper;
 
   @override
-  BaseLayoutController call() => CounterUILayoutController(
+  CounterLayoutModel call() => CounterLayoutModel(
         counterStateManager: _counterStateManager,
         snackBarWrapper: _snackBarWrapper,
       );
